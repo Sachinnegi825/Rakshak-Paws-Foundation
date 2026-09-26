@@ -10,6 +10,7 @@ import campaignRoutes from './routes/campaignRoutes.js';
 import galleryRoutes from './routes/galleryRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import { errorHandler, notFound } from './middlewares/errorHandler.js';
+import { connectDB } from './config/database.js';
 
 import './workers/emailWorker.js';
 import './workers/pdfWorker.js';
@@ -17,6 +18,9 @@ import './workers/pdfWorker.js';
 dotenv.config();
 
 const app: Application = express();
+
+// Connect to MongoDB in serverless environments
+connectDB();
 
 // Trust proxy is required for express-rate-limit when deploying to Vercel/Heroku/Render
 app.set('trust proxy', 1);
