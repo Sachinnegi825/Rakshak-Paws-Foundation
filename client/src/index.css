@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2b7a4b;
+  --color-primary-hover: #22623c;
+  --color-primary-light: #eaf4ee;
+  --color-primary-dark: #1b4d30;
+
+  --color-surface: #fff8ee;
+
+  --color-on-surface: #1a3a2a;
+  --color-on-surface-variant: #546358;
+  --color-outline-variant: #e5dfd5;
+
+  --font-headline: "Public Sans", sans-serif;
+  --font-display: "Public Sans", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Public Sans", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  margin: 0;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+::selection {
+  background-color: rgba(232, 93, 34, 0.2);
+  color: #e85d22;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.material-symbols-outlined.fill-icon {
+  font-variation-settings: 'FILL' 1;
+}
+
+/* Unique Background Pattern */
+.bg-paws-pattern {
+  background-color: #F8FAFC;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.83v58.34h-58.34l-.83-.83A29.952 29.952 0 0 0 0 29.17 29.952 29.952 0 0 0 29.17 0h25.457zM29.17 56.673A27.503 27.503 0 0 1 1.667 29.17 27.503 27.503 0 0 1 29.17 1.667h24.624v24.624A27.503 27.503 0 0 1 29.17 56.673z' fill='%230EA5E9' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+/* Hide scrollbar for carousel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
