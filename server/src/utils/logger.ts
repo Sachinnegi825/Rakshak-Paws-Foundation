@@ -6,6 +6,22 @@ const customFormat = printf(({ level, message, timestamp, stack }) => {
   return `${timestamp} [${level}]: ${stack || message}`;
 });
 
+const transports: winston.transport[] = [
+  new winston.transports.Console({
+    format: combine(
+      colorize(),
+      customFormat
+    )
+  })
+];
+
+// In serverless environments like Vercel, the filesystem is read-only.
+// We only write to file logs if we are strictly NOT on Vercel.
+if (!process.env.VERCEL) {
+  transports.push(new winston.transports.File({ filename: 'logs/error.log', level: 'error' }));
+  transports.push(new winston.transports.File({ filename: 'logs/combined.log' }));
+}
+
 const logger = winston.createLogger({
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   format: combine(
@@ -13,19 +29,7 @@ const logger = winston.createLogger({
     winston.format.errors({ stack: true }),
     customFormat
   ),
-  transports: [
-    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'logs/combined.log' }),
-  ],
+  transports,
 });
-
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: combine(
-      colorize(),
-      customFormat
-    )
-  }));
-}
 
 export default logger;
