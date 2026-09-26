@@ -39,12 +39,12 @@ const worker = new Worker('pdfQueue', async job => {
     donations.forEach((d, i) => {
       if (d.status === 'COMPLETED') totalAmount += d.amount;
       doc.text(`${i + 1}. ${d.donorName} (${d.donorEmail}) - $${d.amount} - ${d.status}`);
-      doc.text(`   Date: ${new Date(d.createdAt).toLocaleString()} | Campaign: ${d.campaignId || 'General'}`);
+      doc.text(`   Date: ${new Date((d as any).createdAt).toLocaleString()} | Campaign: ${d.campaignId || 'General'}`);
       doc.moveDown(0.5);
     });
 
     doc.moveDown();
-    doc.fontSize(14).text(`Total Completed Donations: $${totalAmount.toLocaleString()}`, { font: 'Helvetica-Bold' });
+    doc.font('Helvetica-Bold').fontSize(14).text(`Total Completed Donations: $${totalAmount.toLocaleString()}`);
 
     doc.end();
 

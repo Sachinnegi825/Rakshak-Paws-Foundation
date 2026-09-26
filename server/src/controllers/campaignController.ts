@@ -39,7 +39,7 @@ export const createCampaign = async (req: Request, res: Response): Promise<void>
 
 export const getCampaignById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     let campaign;
     
     // Check if the id parameter is a valid MongoDB ObjectId
@@ -63,7 +63,7 @@ export const getCampaignById = async (req: Request, res: Response): Promise<void
 
 export const updateCampaign = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const validatedData = updateCampaignSchema.parse(req.body);
     
     let query = {};
@@ -93,7 +93,7 @@ export const updateCampaign = async (req: Request, res: Response): Promise<void>
 
 export const deleteCampaign = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     
     let query = {};
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
