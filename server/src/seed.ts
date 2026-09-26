@@ -148,6 +148,42 @@ const seedData = async () => {
         description: "Settling into the new couch perfectly.",
         category: "Forever Homes",
         imageUrl: "https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?q=80&w=800&auto=format&fit=crop",
+      },
+      {
+        title: "Street Rescue",
+        description: "Our volunteer team found this little guy hiding under a car during the storm.",
+        category: "Arrival & Intake",
+        imageUrl: "https://images.unsplash.com/photo-1548802673-38020fb237e1?q=80&w=800&auto=format&fit=crop",
+      },
+      {
+        title: "Physical Therapy",
+        description: "Max learning to use his hind legs again on the underwater treadmill.",
+        category: "Rehabilitation & Foster",
+        imageUrl: "https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?q=80&w=800&auto=format&fit=crop",
+      },
+      {
+        title: "First Bath",
+        description: "Getting rid of the street dirt and fleas! Surprisingly calm.",
+        category: "Rehabilitation & Foster",
+        imageUrl: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80&w=800&auto=format&fit=crop",
+      },
+      {
+        title: "Siblings Together",
+        description: "These two brothers were adopted together by a wonderful family.",
+        category: "Forever Homes",
+        imageUrl: "https://images.unsplash.com/photo-1502673530728-f79b4cab31b1?q=80&w=800&auto=format&fit=crop",
+      },
+      {
+        title: "Snow Day Play",
+        description: "Experiencing snow for the first time after recovering from frostbite.",
+        category: "Rehabilitation & Foster",
+        imageUrl: "https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?q=80&w=800&auto=format&fit=crop",
+      },
+      {
+        title: "The Perfect Match",
+        description: "A match made in heaven. She knew he was the one the moment they locked eyes.",
+        category: "Forever Homes",
+        imageUrl: "https://images.unsplash.com/photo-1544568100-847a948585b9?q=80&w=800&auto=format&fit=crop",
       }
     ];
 

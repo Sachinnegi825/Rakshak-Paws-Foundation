@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { toast } from 'react-toastify';
@@ -10,6 +10,17 @@ export default function DonationModal({ isOpen, onClose, campaign, onDonationSuc
   const [donorName, setDonorName] = useState('');
   const [donorEmail, setDonorEmail] = useState('');
   const [processing, setProcessing] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -97,7 +108,7 @@ export default function DonationModal({ isOpen, onClose, campaign, onDonationSuc
           </button>
         </div>
         
-        <div className="p-8 overflow-y-auto">
+        <div className="p-8 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <h4 className="text-sm uppercase tracking-wider font-bold mb-4" style={{ color: theme.colors.textMuted }}>Select Amount</h4>
           
           <div className="grid grid-cols-3 gap-3 mb-8">

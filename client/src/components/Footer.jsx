@@ -31,20 +31,20 @@ export default function Footer() {
         <div>
           <h4 className="text-lg font-bold mb-6">Quick Links</h4>
           <ul className="space-y-4" style={{ color: theme.colors.border }}>
-            <li><Link to="/about" className="transition-colors" style={{ color: hoverLinks['link1'] ? theme.colors.surface : theme.colors.border }} onMouseEnter={() => handleHover('link1', true)} onMouseLeave={() => handleHover('link1', false)}>About Us</Link></li>
-            <li><Link to="/campaigns" className="transition-colors" style={{ color: hoverLinks['link2'] ? theme.colors.surface : theme.colors.border }} onMouseEnter={() => handleHover('link2', true)} onMouseLeave={() => handleHover('link2', false)}>Our Campaigns</Link></li>
-            <li><Link to="/gallery" className="transition-colors" style={{ color: hoverLinks['link3'] ? theme.colors.surface : theme.colors.border }} onMouseEnter={() => handleHover('link3', true)} onMouseLeave={() => handleHover('link3', false)}>Happy Tails Gallery</Link></li>
-            <li><Link to="/" className="transition-colors" style={{ color: hoverLinks['link4'] ? theme.colors.surface : theme.colors.border }} onMouseEnter={() => handleHover('link4', true)} onMouseLeave={() => handleHover('link4', false)}>Contact</Link></li>
+            <li><Link to="/about" className="transition-colors" style={{ color: hoverLinks['link1'] ? theme.colors.accent : theme.colors.border }} onMouseEnter={() => handleHover('link1', true)} onMouseLeave={() => handleHover('link1', false)}>About Us</Link></li>
+            <li><Link to="/campaigns" className="transition-colors" style={{ color: hoverLinks['link2'] ? theme.colors.accent : theme.colors.border }} onMouseEnter={() => handleHover('link2', true)} onMouseLeave={() => handleHover('link2', false)}>Our Campaigns</Link></li>
+            <li><Link to="/gallery" className="transition-colors" style={{ color: hoverLinks['link3'] ? theme.colors.accent : theme.colors.border }} onMouseEnter={() => handleHover('link3', true)} onMouseLeave={() => handleHover('link3', false)}>Happy Tails Gallery</Link></li>
+            <li><Link to="/" className="transition-colors" style={{ color: hoverLinks['link4'] ? theme.colors.accent : theme.colors.border }} onMouseEnter={() => handleHover('link4', true)} onMouseLeave={() => handleHover('link4', false)}>Contact</Link></li>
           </ul>
         </div>
         
         <div>
           <h4 className="text-lg font-bold mb-6">Support Us</h4>
           <ul className="space-y-4" style={{ color: theme.colors.border }}>
-            <li><a href="#donate" className="transition-colors" style={{ color: hoverLinks['link5'] ? theme.colors.surface : theme.colors.border }} onMouseEnter={() => handleHover('link5', true)} onMouseLeave={() => handleHover('link5', false)}>Donate Online</a></li>
-            <li><a href="#adopt" className="transition-colors" style={{ color: hoverLinks['link6'] ? theme.colors.surface : theme.colors.border }} onMouseEnter={() => handleHover('link6', true)} onMouseLeave={() => handleHover('link6', false)}>Adopt a Pet</a></li>
-            <li><a href="#foster" className="transition-colors" style={{ color: hoverLinks['link7'] ? theme.colors.surface : theme.colors.border }} onMouseEnter={() => handleHover('link7', true)} onMouseLeave={() => handleHover('link7', false)}>Become a Foster</a></li>
-            <li><a href="#volunteer" className="transition-colors" style={{ color: hoverLinks['link8'] ? theme.colors.surface : theme.colors.border }} onMouseEnter={() => handleHover('link8', true)} onMouseLeave={() => handleHover('link8', false)}>Volunteer at Shelter</a></li>
+            <li><a href="#donate" className="transition-colors" style={{ color: hoverLinks['link5'] ? theme.colors.accent : theme.colors.border }} onMouseEnter={() => handleHover('link5', true)} onMouseLeave={() => handleHover('link5', false)}>Donate Online</a></li>
+            <li><a href="#adopt" className="transition-colors" style={{ color: hoverLinks['link6'] ? theme.colors.accent : theme.colors.border }} onMouseEnter={() => handleHover('link6', true)} onMouseLeave={() => handleHover('link6', false)}>Adopt a Pet</a></li>
+            <li><a href="#foster" className="transition-colors" style={{ color: hoverLinks['link7'] ? theme.colors.accent : theme.colors.border }} onMouseEnter={() => handleHover('link7', true)} onMouseLeave={() => handleHover('link7', false)}>Become a Foster</a></li>
+            <li><a href="#volunteer" className="transition-colors" style={{ color: hoverLinks['link8'] ? theme.colors.accent : theme.colors.border }} onMouseEnter={() => handleHover('link8', true)} onMouseLeave={() => handleHover('link8', false)}>Volunteer at Shelter</a></li>
           </ul>
         </div>
 
@@ -71,8 +71,8 @@ export default function Footer() {
         <p>© 2026 Rakshak Paws Foundation. All rights reserved.</p>
         <div className="flex gap-6">
           <Link to="/admin/login" className="transition-colors font-bold" style={{ color: hoverLinks['link11'] ? theme.colors.accent : theme.colors.border }} onMouseEnter={() => handleHover('link11', true)} onMouseLeave={() => handleHover('link11', false)}>Admin Portal</Link>
-          <a href="#" className="transition-colors" style={{ color: hoverLinks['link9'] ? theme.colors.surface : theme.colors.border }} onMouseEnter={() => handleHover('link9', true)} onMouseLeave={() => handleHover('link9', false)}>Privacy Policy</a>
-          <a href="#" className="transition-colors" style={{ color: hoverLinks['link10'] ? theme.colors.surface : theme.colors.border }} onMouseEnter={() => handleHover('link10', true)} onMouseLeave={() => handleHover('link10', false)}>Adoption Policies</a>
+          <a href="#" className="transition-colors" style={{ color: hoverLinks['link9'] ? theme.colors.accent : theme.colors.border }} onMouseEnter={() => handleHover('link9', true)} onMouseLeave={() => handleHover('link9', false)}>Privacy Policy</a>
+          <a href="#" className="transition-colors" style={{ color: hoverLinks['link10'] ? theme.colors.accent : theme.colors.border }} onMouseEnter={() => handleHover('link10', true)} onMouseLeave={() => handleHover('link10', false)}>Adoption Policies</a>
         </div>
       </div>
     </footer>
