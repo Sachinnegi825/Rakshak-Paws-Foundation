@@ -18,6 +18,9 @@ dotenv.config();
 
 const app: Application = express();
 
+// Trust proxy is required for express-rate-limit when deploying to Vercel/Heroku/Render
+app.set('trust proxy', 1);
+
 // Security & Utility Middlewares
 app.use(helmet());
 app.use(cors({ origin: true, credentials: true }));
