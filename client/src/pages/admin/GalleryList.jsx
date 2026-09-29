@@ -1,47 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { theme } from '../../theme';
 import { Plus, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import GalleryModal from '../../components/modals/GalleryModal';
+import { apiClient } from '../../lib/api';
+import { queryKeys } from '../../lib/queryKeys';
 
 export default function AdminGalleryList() {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const qc = useQueryClient();
   const [page, setPage] = useState(1);
-  const [pagination, setPagination] = useState({});
-  
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchItems(page);
-  }, [page]);
+  // ── Admin list uses its own query key (limit=12) separate from public gallery ──
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ['admin', 'gallery', page],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/gallery?page=${page}&limit=12`);
+      return data;
+    },
+    placeholderData: (prev) => prev,
+  });
 
-  const fetchItems = async (currentPage = 1) => {
-    try {
-      setLoading(true);
-      const { data } = await axios.get(`/gallery?page=${currentPage}&limit=12`);
-      setItems(data.data);
-      setPagination(data.pagination);
-    } catch (error) {
-      toast.error('Failed to fetch gallery items');
-    } finally {
-      setLoading(false);
-    }
+  const items = data?.data ?? [];
+  const pagination = data?.pagination ?? {};
+
+  /** Bust ALL gallery cache keys so public pages AND this admin list re-fetch */
+  const invalidateGalleryCache = () => {
+    qc.invalidateQueries({ queryKey: queryKeys.gallery.all() });
+    qc.invalidateQueries({ queryKey: ['admin', 'gallery'] });
   };
 
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
+  const handleOpenModal = () => setShowModal(true);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this photo?')) return;
     try {
-      await axios.delete(`/gallery/${id}`);
+      await apiClient.delete(`/gallery/${id}`);
       toast.success('Photo deleted successfully');
-      fetchItems();
-    } catch (error) {
+      invalidateGalleryCache(); // triggers auto-refetch via useQuery
+    } catch {
       toast.error('Failed to delete photo');
     }
   };
@@ -49,16 +48,17 @@ export default function AdminGalleryList() {
   const handleSubmit = async (formData) => {
     setIsSubmitting(true);
     try {
-      await axios.post('/gallery', formData);
+      await apiClient.post('/gallery', formData);
       toast.success('Photo added successfully');
       setShowModal(false);
-      fetchItems();
+      invalidateGalleryCache(); // triggers auto-refetch via useQuery
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to save photo');
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
@@ -106,7 +106,6 @@ export default function AdminGalleryList() {
           )}
         </div>
         
-        {/* Pagination Controls */}
         {pagination && pagination.pages > 1 && (
           <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
             <span className="text-sm text-slate-500 font-medium">
@@ -132,7 +131,6 @@ export default function AdminGalleryList() {
         )}
       </div>
 
-      {/* Modular Modal */}
       <GalleryModal 
         isOpen={showModal} 
         onClose={() => setShowModal(false)} 

@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { theme } from '../../theme';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import CampaignModal from '../../components/modals/CampaignModal';
+import { apiClient } from '../../lib/api';
+import { queryKeys } from '../../lib/queryKeys';
 
 export default function AdminCampaignsList() {
-  const [campaigns, setCampaigns] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const qc = useQueryClient();
   const [page, setPage] = useState(1);
-  const [pagination, setPagination] = useState({});
   
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -23,21 +23,23 @@ export default function AdminCampaignsList() {
   };
   const [formData, setFormData] = useState(initialForm);
 
-  useEffect(() => {
-    fetchCampaigns(page);
-  }, [page]);
+  // ── Admin list uses its own query key (limit=10) separate from public list ──
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ['admin', 'campaigns', page],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/campaigns?page=${page}&limit=10`);
+      return data;
+    },
+    placeholderData: (prev) => prev,
+  });
 
-  const fetchCampaigns = async (currentPage = 1) => {
-    try {
-      setLoading(true);
-      const { data } = await axios.get(`/campaigns?page=${currentPage}&limit=10`);
-      setCampaigns(data.data);
-      setPagination(data.pagination);
-    } catch (error) {
-      toast.error('Failed to fetch campaigns');
-    } finally {
-      setLoading(false);
-    }
+  const campaigns = data?.data ?? [];
+  const pagination = data?.pagination ?? {};
+
+  /** Bust ALL campaign cache keys so public pages AND this admin list re-fetch */
+  const invalidateCampaignCache = () => {
+    qc.invalidateQueries({ queryKey: queryKeys.campaigns.all() });
+    qc.invalidateQueries({ queryKey: ['admin', 'campaigns'] });
   };
 
   const handleOpenModal = (campaign = null) => {
@@ -64,10 +66,10 @@ export default function AdminCampaignsList() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this campaign?')) return;
     try {
-      await axios.delete(`/campaigns/${id}`);
+      await apiClient.delete(`/campaigns/${id}`);
       toast.success('Campaign deleted successfully');
-      fetchCampaigns();
-    } catch (error) {
+      invalidateCampaignCache(); // triggers auto-refetch via useQuery
+    } catch {
       toast.error('Failed to delete campaign');
     }
   };
@@ -76,20 +78,19 @@ export default function AdminCampaignsList() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const payload = {
-        ...formData,
-        goalAmount: Number(formData.goalAmount)
-      };
+      const payload = { ...formData, goalAmount: Number(formData.goalAmount) };
 
       if (editingId) {
-        await axios.put(`/campaigns/${editingId}`, payload);
+        await apiClient.put(`/campaigns/${editingId}`, payload);
         toast.success('Campaign updated successfully');
+        qc.invalidateQueries({ queryKey: queryKeys.campaigns.detail(editingId) });
       } else {
-        await axios.post('/campaigns', payload);
+        await apiClient.post('/campaigns', payload);
         toast.success('Campaign created successfully');
       }
+
       setShowModal(false);
-      fetchCampaigns();
+      invalidateCampaignCache(); // triggers auto-refetch via useQuery
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to save campaign');
     } finally {
@@ -160,9 +161,7 @@ export default function AdminCampaignsList() {
                         <div className="w-24 h-1.5 bg-slate-200 rounded-full mt-1" />
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="w-16 h-6 bg-slate-200 rounded-full" />
-                    </td>
+                    <td className="px-6 py-4"><div className="w-16 h-6 bg-slate-200 rounded-full" /></td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-3">
                         <div className="w-9 h-9 bg-slate-200 rounded-lg" />
@@ -200,9 +199,7 @@ export default function AdminCampaignsList() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <StatusBadge active={c.isActive} />
-                    </td>
+                    <td className="px-6 py-4"><StatusBadge active={c.isActive} /></td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-3">
                         <button onClick={() => handleOpenModal(c)} className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
@@ -220,7 +217,6 @@ export default function AdminCampaignsList() {
           </table>
         </div>
         
-        {/* Pagination Controls */}
         {pagination.pages > 1 && (
           <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50">
             <span className="text-sm text-slate-500 font-medium">
@@ -246,7 +242,6 @@ export default function AdminCampaignsList() {
         )}
       </div>
 
-      {/* Modular Modal */}
       <CampaignModal 
         isOpen={showModal} 
         onClose={() => setShowModal(false)} 
