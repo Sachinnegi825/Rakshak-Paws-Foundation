@@ -1,31 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { theme } from '../theme'
+import { useGallery } from '../hooks/queries/useGalleryQueries'
 
 export default function GalleryPage() {
   const [hoverImg, setHoverImg] = useState(null)
-
-  const [galleryItems, setGalleryItems] = useState([])
-  const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
-  const [pagination, setPagination] = useState({})
 
-  useEffect(() => {
-    const fetchGallery = async () => {
-      try {
-        setLoading(true)
-        const { data } = await axios.get(`/gallery?page=${page}&limit=20`)
-        setGalleryItems(data.data || [])
-        setPagination(data.pagination || {})
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchGallery()
-  }, [page])
+  const { data, isLoading } = useGallery({ page, limit: 20 })
+
+  const galleryItems = data?.data || []
+  const pagination = data?.pagination || {}
 
   // Dynamic grouping by category
   const arrivals = galleryItems.filter(item => item.category === 'Arrival & Intake')
@@ -96,7 +81,7 @@ export default function GalleryPage() {
         </motion.div>
 
         {/* Gallery Content */}
-        {loading ? (
+        {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[250px] mb-32">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div key={i} className="rounded-3xl bg-slate-200 animate-pulse md:col-span-1 md:row-span-1" />

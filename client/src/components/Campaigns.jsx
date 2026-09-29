@@ -1,30 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 import { theme } from '../theme'
+import { useCampaignsPreview } from '../hooks/queries/useCampaignQueries'
 
 export default function Campaigns() {
-  const [campaigns, setCampaigns] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
   const [hoverAll, setHoverAll] = useState(false)
   const [hoverCards, setHoverCards] = useState([false, false, false])
-  
-  useEffect(() => {
-    const fetchCampaigns = async () => {
-      try {
-        const { data } = await axios.get('/campaigns')
-        // Only show top 3 featured or active campaigns
-        setCampaigns(data.data.slice(0, 3))
-      } catch (err) {
-        console.error(err)
-        setError(true)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchCampaigns()
-  }, [])
+
+  const { data, isLoading, isError } = useCampaignsPreview()
+  const campaigns = data?.data ?? []
 
   const handleCardHover = (index, isHovering) => {
     const newHovers = [...hoverCards]
@@ -57,7 +41,7 @@ export default function Campaigns() {
           </Link>
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[1, 2, 3].map((_, i) => (
               <div key={i} className="rounded-[30px] overflow-hidden shadow-lg animate-pulse" style={{ backgroundColor: theme.colors.surface }}>
@@ -76,7 +60,7 @@ export default function Campaigns() {
               </div>
             ))}
           </div>
-        ) : error || campaigns.length === 0 ? (
+        ) : isError || campaigns.length === 0 ? (
           <div className="w-full py-16 text-center rounded-[30px] border-2 border-dashed border-slate-200" style={{ backgroundColor: theme.colors.surface }}>
             <h3 className="text-2xl font-bold mb-2" style={{ color: theme.colors.textMain }}>No active campaigns found</h3>
             <p style={{ color: theme.colors.textMuted }}>Check back later or contact support if this is an error.</p>

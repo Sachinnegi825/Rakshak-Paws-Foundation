@@ -1,36 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 import { motion } from 'framer-motion'
 import { theme } from '../theme'
+import { useCampaigns } from '../hooks/queries/useCampaignQueries'
 
 export default function CampaignsList() {
   const [hoverId, setHoverId] = useState(null)
-
-  const [campaigns, setCampaigns] = useState([])
-  const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
-  const [pagination, setPagination] = useState({})
 
-  useEffect(() => {
-    const fetchCampaigns = async () => {
-      try {
-        setLoading(true)
-        const { data } = await axios.get(`/campaigns?page=${page}&limit=7`)
-        setCampaigns(data.data || [])
-        setPagination(data.pagination || {})
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchCampaigns()
-  }, [page])
+  const { data, isLoading } = useCampaigns({ page, limit: 7 })
 
+  const campaigns = data?.data || []
+  const pagination = data?.pagination || {}
   const featured = campaigns.find(c => c.isFeatured)
   const rest = campaigns.filter(c => c._id !== featured?._id)
-
 
   const fadeUp = {
     hidden: { opacity: 0, y: 50 },
@@ -54,7 +37,7 @@ export default function CampaignsList() {
         </motion.div>
 
         {/* Featured Massive Campaign (Only on Page 1) */}
-        {loading && page === 1 ? (
+        {isLoading && page === 1 ? (
           <div className="flex flex-col md:flex-row rounded-[40px] overflow-hidden shadow-2xl mb-12 bg-white border border-slate-100 animate-pulse h-auto md:h-[400px]">
             <div className="md:w-3/5 h-[400px] md:h-full bg-slate-200" />
             <div className="md:w-2/5 p-12 flex flex-col justify-center">
@@ -62,7 +45,6 @@ export default function CampaignsList() {
               <div className="h-5 bg-slate-200 rounded-lg w-full mb-3" />
               <div className="h-5 bg-slate-200 rounded-lg w-full mb-3" />
               <div className="h-5 bg-slate-200 rounded-lg w-2/3 mb-10" />
-              
               <div className="w-full h-3 rounded-full bg-slate-200 mb-4" />
               <div className="flex justify-between mb-10">
                 <div className="h-5 bg-slate-200 rounded w-1/3" />
@@ -111,7 +93,7 @@ export default function CampaignsList() {
         )}
 
         {/* Grid Area */}
-        {loading ? (
+        {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mt-12">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="rounded-[30px] overflow-hidden border shadow-sm bg-white animate-pulse h-[500px] flex flex-col">
@@ -119,14 +101,14 @@ export default function CampaignsList() {
                 <div className="p-8 flex-grow flex flex-col justify-between">
                   <div>
                     <div className="h-8 bg-slate-200 rounded-lg w-3/4 mb-4" />
-                    <div className="h-4 bg-slate-200 rounded lg w-full mb-2" />
-                    <div className="h-4 bg-slate-200 rounded lg w-5/6 mb-8" />
+                    <div className="h-4 bg-slate-200 rounded-lg w-full mb-2" />
+                    <div className="h-4 bg-slate-200 rounded-lg w-5/6 mb-8" />
                   </div>
                   <div>
                     <div className="h-2 bg-slate-200 rounded-full w-full mb-4" />
                     <div className="flex justify-between mb-6">
-                      <div className="h-4 bg-slate-200 rounded lg w-16" />
-                      <div className="h-4 bg-slate-200 rounded lg w-16" />
+                      <div className="h-4 bg-slate-200 rounded-lg w-16" />
+                      <div className="h-4 bg-slate-200 rounded-lg w-16" />
                     </div>
                     <div className="h-14 bg-slate-200 rounded-2xl w-full" />
                   </div>
@@ -138,7 +120,7 @@ export default function CampaignsList() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {rest.map((c, i) => (
               <motion.div 
-                key={i} 
+                key={c._id ?? i} 
                 variants={fadeUp} 
                 initial="hidden" 
                 whileInView="visible" 

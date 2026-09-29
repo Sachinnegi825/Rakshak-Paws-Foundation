@@ -1,35 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 import { theme } from '../theme'
+import { useGalleryPreview } from '../hooks/queries/useGalleryQueries'
 
 export default function Gallery() {
   const [hoverBtn, setHoverBtn] = useState(false)
-  const [galleryItems, setGalleryItems] = useState([])
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const fetchGallery = async () => {
-      try {
-        const { data } = await axios.get('/gallery?limit=4')
-        if (data && data.data) {
-          setGalleryItems(data.data.slice(0, 4))
-        }
-      } catch (error) {
-        console.error('Failed to fetch gallery items:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchGallery()
-  }, [])
+  const { data: fetchedItems = [] } = useGalleryPreview()
 
-  // Provide fallback images if API fails or returns less than 4 items
+  // Provide fallback images if API returns less than 4 items
   const items = [
-    galleryItems[0] || { imageUrl: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=1000&auto=format&fit=crop', title: "Luna's Got a Home!", description: "A beautiful rescue story." },
-    galleryItems[1] || { imageUrl: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=600&auto=format&fit=crop', title: "Safe & Sound", description: "Recovering in foster care." },
-    galleryItems[2] || { imageUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=600&auto=format&fit=crop', title: "New Beginnings", description: "First day at the shelter." },
-    galleryItems[3] || { imageUrl: 'https://images.unsplash.com/photo-1525253086316-d0c936c814f8?q=80&w=600&auto=format&fit=crop', title: "Happy Tails", description: "Ready for adoption!" }
+    fetchedItems[0] || { imageUrl: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=1000&auto=format&fit=crop', title: "Luna's Got a Home!", description: "A beautiful rescue story." },
+    fetchedItems[1] || { imageUrl: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=600&auto=format&fit=crop', title: "Safe & Sound", description: "Recovering in foster care." },
+    fetchedItems[2] || { imageUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=600&auto=format&fit=crop', title: "New Beginnings", description: "First day at the shelter." },
+    fetchedItems[3] || { imageUrl: 'https://images.unsplash.com/photo-1525253086316-d0c936c814f8?q=80&w=600&auto=format&fit=crop', title: "Happy Tails", description: "Ready for adoption!" }
   ]
 
   return (
@@ -45,7 +29,7 @@ export default function Gallery() {
           </p>
         </div>
 
-        {loading ? (
+        {fetchedItems.length === 0 ? (
           <div className="flex flex-col md:flex-row gap-6 md:h-[600px] animate-pulse">
             <div className="flex-1 rounded-[40px] bg-slate-200"></div>
             <div className="flex-1 flex flex-col gap-6 md:-mt-12 md:mb-12">
